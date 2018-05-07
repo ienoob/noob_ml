@@ -34,7 +34,6 @@ class KNN(object):
 
         return predict_result
 
-
     def nearest_data(self, da):
         distance_list = []
         for i, d in enumerate(self.train):
@@ -46,7 +45,14 @@ class KNN(object):
 
         return index_result[:self.k]
 
-    def get_distance(self, a, b):
+    # 欧几里得距离
+    @staticmethod
+    def get_distance(a, b):
+        """
+        :param a:
+        :param b:
+        :return:
+        """
         c = zip(a, b)
         d = map(lambda x: (x[0]-x[1])**2, c)
         return math.sqrt(sum(d))
