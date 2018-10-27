@@ -12,6 +12,8 @@ data, target = load_iris(True)
 train = data[:100]
 target = target[:100]
 
+print(train.shape)
+
 clf = LogisticRegression()
 clf.fit(train, target)
 
