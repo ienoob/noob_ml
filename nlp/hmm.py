@@ -37,11 +37,22 @@ class HMM(object):
         back_ = back_*self.big_b[:, big_v[0]:big_v[0]+1]*self.pi
         return back_.sum()
 
-
-
-
-
-
-
-# 前向后向方法
-
+    # viterbi
+    def viterbi(self, big_v):
+        _state = []
+        pb_ = self.pi*self.big_b[:, big_v[0]:big_v[0]+1]
+        for ob in big_v[1:]:
+            pb_matrix = pb_ * self.big_a
+            pb_ = np.max(pb_matrix, axis=0)
+            max_index = np.argmax(pb_matrix, axis=0)
+            _state.append(max_index)
+            pb_ = pb_.reshape((pb_.shape[0], 1))
+            pb_ = pb_ * self.big_b[:, ob:ob+1]
+        _state = np.array(_state).T
+        max_pb = np.max(pb_)
+        max_index = np.argmax(pb_, axis=0)[0]
+        max_state = [max_index]
+        for i in range(len(big_v)-2, -1, -1):
+            max_index = _state[max_index][i]
+            max_state.append(max_index)
+        return max_pb, max_state
