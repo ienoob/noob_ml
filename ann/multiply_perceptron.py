@@ -3,17 +3,19 @@
 """
     多层感知机, 全连接神经网络
     标准的bp神经网络 == 随机梯度下降 stochastic gradient descent
+    累积的bp神经网络 == 批梯度下降 batch gradient descent
 """
 import numpy as np
+
 
 class MultiplyPerceptron(object):
 
     def __init__(self):
-        self.max_iter = 1000 # 迭代次数
-        self.hidden = 5  # 隐藏层节点数
+        self.max_iter = 10000 # 迭代次数
+        self.hidden = 10  # 隐藏层节点数
         self.output = 2  # 输出节点数
-        self.learning_rate1 = 0.0001 # 学习率1
-        self.learning_rate2 = 0.0001 # 学习率2
+        self.learning_rate1 = 0.001  # 学习率1
+        self.learning_rate2 = 0.001  # 学习率2
 
         self.w = None # 第一层
         self.v = None
@@ -25,26 +27,26 @@ class MultiplyPerceptron(object):
         row, column = train.shape
         target = target.reshape((len(target), 1))
         target_2 = 1 - target
-        target = np.hstack((target, target_2))
+        target = np.hstack((target_2, target))
 
         w = np.random.randn(column, self.hidden)
         v = np.random.randn(self.hidden, self.output)
         b1 = np.random.randn(self.hidden, 1)
-        b1 = np.zeros((self.hidden, 1))
         b2 = np.random.randn(self.output, 1)
-        b2 = np.zeros((self.output, 1))
 
         z1 = np.dot(train, w) + np.tile(b1, (1, row)).T
         cita1 = sigmoid(z1)
 
         z2 = np.dot(cita1, v) + np.tile(b2, (1, row)).T
         cita2 = sigmoid(z2)
+        cita2 = np.apply_along_axis(softmax, 1, cita2)
+        # print(cita2)
 
         j = 0
         ex = 0
         while ex < self.max_iter:
-            print(np.sum(np.square(cita2-target))/row)
-            batch = 20
+            print(np.sum(np.square(cita2-target))/row/2)
+            batch = 1
             delta_w_m = np.zeros((column, self.hidden))
             delta_v_m = np.zeros((self.hidden, self.output))
             delta_b1_m = np.zeros((self.hidden, 1))
@@ -96,11 +98,30 @@ class MultiplyPerceptron(object):
             cita2 = sigmoid(z2)
 
             ex += 1
-
+            # break
+        self.w = w
+        self.v = v
+        self.b1 = b1
+        self.b2 = b2
 
     def predict(self, data):
-        pass
+        row, column = data.shape
+        z1 = np.dot(data, self.w) + np.tile(self.b1, (1, row)).T
+        cita1 = sigmoid(z1)
+
+        z2 = np.dot(cita1, self.v) + np.tile(self.b2, (1, row)).T
+        cita2 = sigmoid(z2)
+
+        return cita2
 
 
 def sigmoid(x):
     return 1.0/(1+np.exp(x))
+
+def softmax(x):
+    b = np.sum(np.exp(x))
+    return np.exp(x)/b
+
+if __name__ == "__main__":
+    a = np.array([[1,1],[2,2]])
+    print(np.apply_along_axis(softmax, 1, a))

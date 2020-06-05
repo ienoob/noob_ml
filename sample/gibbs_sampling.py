@@ -6,6 +6,7 @@ __author__ = "jack.li"
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def p_x_given_y(y, mus, sigmas):
     mu = mus[0] + sigmas[1, 0] / sigmas[0, 0] * (y - mus[1])
     sigma = sigmas[0, 0] - sigmas[1, 0] / sigmas[1, 1] * sigmas[1, 0]

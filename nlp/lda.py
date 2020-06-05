@@ -30,6 +30,7 @@ theta = 0.2   # doc -> topic
 phi = 0.5  # topic -> word
 tassign = 0
 
+
 class Document(object):
     def __init__(self):
         self.words = []
