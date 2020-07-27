@@ -3,6 +3,8 @@
 """
 import re
 import heapq
+import numpy as np
+
 data = """
 
    I have a good friend, and her name is Li Hua. We have become friends for about two years. 
@@ -76,9 +78,30 @@ def f(input_id, input_tree, path):
         return f(input_id, input_tree.right, path+[1])
 
 
-paht = f(3, hft, [])
+paht = f(4, hft, [])
 print(paht)
 
+
+point_num = 0
+word_embed = 5
+
+
+def f1(input_tree):
+
+    if input_tree is None:
+        return 0
+    v = 1
+    if input_tree.left:
+        v += f1(input_tree.left)
+    if input_tree.right:
+        v += f1(input_tree.right)
+
+    return v
+
+
+print("word num {}".format(len(word2id)))
+
+print(f1(hft))
 
 
 class HuffmanTree(object):
